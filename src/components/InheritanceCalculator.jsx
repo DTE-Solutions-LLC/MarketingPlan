@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './InheritanceCalculator.css';
 
-const InheritanceCalculator = () => {
+const InheritanceCalculator = ({ onAction }) => {
   const [amount, setAmount] = useState(250000);
   const [spending, setSpending] = useState(2000);
   const [growth, setGrowth] = useState(5);
@@ -100,7 +100,7 @@ const InheritanceCalculator = () => {
               <span className="success">Generational: This level of spending allows for long-term wealth preservation.</span>
             )}
           </div>
-          <button className="calc-cta" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
+          <button className="calc-cta" onClick={onAction}>
             Build a Professional Plan →
           </button>
         </div>

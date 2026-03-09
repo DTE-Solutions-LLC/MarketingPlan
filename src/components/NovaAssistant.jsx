@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './NovaAssistant.css';
 
-const NovaAssistant = () => {
+const NovaAssistant = ({ onLeadCapture }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null); // 'inheritor', 'cpa', 'cfp'
+  const [step, setStep] = useState('initial');
   const [messages, setMessages] = useState([
     {
       id: 1,
       type: 'nova',
-      text: "Welcome to the NestLegacy Digital Trust Layer. I'm Nova, your analytical partner. How can I help you navigate the Great Wealth Transfer today?",
+      text: "Systems online. I'm Nova, the analytical focal point for the NestLegacy ecosystem. To better align our session, are you an inheritor seeking guidance, or a financial professional exploring our acquisition infrastructure?",
       timestamp: new Date().toISOString(),
     },
   ]);
@@ -25,46 +27,57 @@ const NovaAssistant = () => {
     }
   }, [messages, isOpen, isTyping]);
 
-  const handleSend = async () => {
-    if (!inputValue.trim()) return;
-
-    const userMessage = {
+  const addMessage = (type, text) => {
+    setMessages((prev) => [...prev, {
       id: Date.now(),
-      type: 'user',
-      text: inputValue,
+      type,
+      text,
       timestamp: new Date().toISOString(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue('');
-    setIsTyping(true);
-
-    // Simulated Nova response
-    setTimeout(() => {
-      let novaResponseText = "I'm processing your inquiry with DTE high-fidelity standards. As a CFP Digital Acquisition Ecosystem, I'm here to bridge the gap between complex inheritance scenarios and professional guidance. Would you like to explore our Inheritance Calculator or schedule a discovery call with a CFP?";
-      
-      if (inputValue.toLowerCase().includes('inheritance') || inputValue.toLowerCase().includes('money')) {
-        novaResponseText = "Inheritance events are often accompanied by significant emotional and financial complexity. My internal modeling suggests that early alignment with a CFP can reduce long-term tax exposure by up to 30%. Shall we run a quick longevity projection for your specific case?";
-      } else if (inputValue.toLowerCase().includes('cpa') || inputValue.toLowerCase().includes('partner')) {
-        novaResponseText = "For CPAs, NestLegacy acts as a high-fidelity referral bridge. We qualify the leads behaviorally and financially before they reach the advisory level. This ensures data integrity across the entire partnership ecosystem.";
-      }
-
-      const novaMessage = {
-        id: Date.now() + 1,
-        type: 'nova',
-        text: novaResponseText,
-        timestamp: new Date().toISOString(),
-      };
-
-      setMessages((prev) => [...prev, novaMessage]);
-      setIsTyping(false);
-    }, 1500);
+    }]);
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSend();
-    }
+  const processResponse = (input) => {
+    const lowerInput = input.toLowerCase();
+    setIsTyping(true);
+
+    setTimeout(() => {
+      let response = "";
+
+      if (step === 'initial') {
+        if (lowerInput.includes('inheritor') || lowerInput.includes('guidance') || lowerInput.includes('money')) {
+          setUserRole('inheritor');
+          setStep('qualifying_inheritor');
+          response = "Understood. Managing a wealth event requires high-fidelity data integrity. Have you calculated the longevity of your inheritance using our tool yet, or would you like me to identify potential tax traps for your specific amount?";
+        } else if (lowerInput.includes('cpa') || lowerInput.includes('professional') || lowerInput.includes('cfp')) {
+          setUserRole('pro');
+          setStep('qualifying_pro');
+          response = "Excellent. NestLegacy is engineered to bridge the trust gap. Are you looking to deploy this acquisition ecosystem for your own practice, or are you interested in our CPA-to-CFP referral architecture?";
+        } else {
+          response = "I've logged your input. My primary function is to optimize the bridge between inheritors and fiduciary experts. Which side of that bridge are you on?";
+        }
+      } else if (step === 'qualifying_inheritor') {
+        setStep('lead_capture');
+        response = "I've analyzed the behavioral patterns of similar wealth events. To provide a high-fidelity longevity projection and connect you with a vetted CFP, I'll need to secure your primary email. Shall we proceed?";
+        setTimeout(onLeadCapture, 2000);
+      } else if (step === 'qualifying_pro') {
+        setStep('demo_setup');
+        response = "Our architecture is modular and compliance-first. I can generate a technical breakdown of our lead-scoring algorithm for you. Would you like to schedule a 15-minute system walkthrough?";
+        setTimeout(onLeadCapture, 2000);
+      } else {
+        response = "Processing... I'm ready to move this to a high-fidelity discovery call. You can click the 'Schedule' button above or provide your details here.";
+      }
+
+      addMessage('nova', response);
+      setIsTyping(false);
+    }, 1200);
+  };
+
+  const handleSend = () => {
+    if (!inputValue.trim()) return;
+    addMessage('user', inputValue);
+    const input = inputValue;
+    setInputValue('');
+    processResponse(input);
   };
 
   return (
@@ -73,7 +86,7 @@ const NovaAssistant = () => {
         <button className="nova-trigger" onClick={() => setIsOpen(true)}>
           <div className="nova-pulse"></div>
           <span className="nova-icon">N</span>
-          <span className="nova-label">Talk to Nova</span>
+          <span className="nova-label">Analytical Twin Active</span>
         </button>
       )}
 
@@ -83,8 +96,8 @@ const NovaAssistant = () => {
             <div className="nova-header-info">
               <div className="nova-avatar">N</div>
               <div>
-                <h3>Nova AI</h3>
-                <span className="nova-status">Analytical Twin Active</span>
+                <h3>Nova Assistant</h3>
+                <span className="nova-status">Lead Intelligence Engine</span>
               </div>
             </div>
             <button className="nova-close" onClick={() => setIsOpen(false)}>&times;</button>
@@ -116,10 +129,10 @@ const NovaAssistant = () => {
           <div className="nova-input-area">
             <input
               type="text"
-              placeholder="Ask Nova about your inheritance strategy..."
+              placeholder="System prompt..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             />
             <button className="nova-send" onClick={handleSend}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -129,7 +142,7 @@ const NovaAssistant = () => {
           </div>
           
           <div className="nova-footer">
-            Powered by DTE Solutions | Data · Integrity · Engineering
+            DTE SOLUTIONS | DATA · INTEGRITY · ENGINEERING
           </div>
         </div>
       )}

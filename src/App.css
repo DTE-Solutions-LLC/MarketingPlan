@@ -614,14 +614,74 @@ footer {
 	}
 }
 
+/* Ecosystem Section */
+.ecosystem-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 24px;
+	margin-top: 60px;
+}
+
+@media (max-width: 1024px) {
+	.ecosystem-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 640px) {
+	.ecosystem-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.pillar-card {
+	background: rgba(27, 47, 74, 0.3);
+	border: 1px solid rgba(212, 175, 55, 0.1);
+	border-radius: 16px;
+	padding: 32px;
+	transition: all 0.3s ease;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.pillar-card:hover {
+	background: rgba(27, 47, 74, 0.5);
+	border-color: var(--gold);
+	transform: translateY(-5px);
+}
+
+.pillar-icon {
+	color: var(--gold);
+	font-size: 1.5rem;
+	font-weight: 700;
+	opacity: 0.5;
+}
+
+.pillar-card h4 {
+	font-family: "Playfair Display", serif;
+	font-size: 1.25rem;
+	color: var(--light-gold);
+}
+
+.pillar-card p {
+	font-size: 0.9rem;
+	color: var(--steel);
+	line-height: 1.6;
+}
+
 /* Scroll animations */
 .fade-in {
 	opacity: 0;
 	transform: translateY(30px);
-	transition: all 0.8s ease-out;
+	transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-in.visible {
 	opacity: 1;
 	transform: translateY(0);
+}
+
+html {
+  scroll-behavior: smooth;
 }

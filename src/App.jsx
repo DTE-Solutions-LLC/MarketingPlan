@@ -1,9 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import NovaAssistant from './components/NovaAssistant';
 import InheritanceCalculator from './components/InheritanceCalculator';
+import LeadCaptureModal from './components/LeadCaptureModal';
 
 function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalSource, setModalSource] = useState('general');
+
+  const openModal = (source = 'general') => {
+    setModalSource(source);
+    setIsModalOpen(true);
+  };
+
   useEffect(() => {
     // Fade-in on scroll observer
     const observerOptions = {
@@ -27,7 +36,7 @@ function App() {
   }, []);
 
   const handleCTAClick = () => {
-    window.location.href = 'mailto:drew@pulseapp.com?subject=Discovery%20Call%20Request&body=Andrew,%0D%0A%0D%0AI%27d%20like%20to%20schedule%20a%2030-minute%20discovery%20call%20to%20discuss%20the%20Client%20Acquisition%20System.%0D%0A%0D%0AMy%20availability%3A%0D%0A-%20%0D%0A-%20%0D%0A-%20%0D%0A%0D%0AThanks!';
+    openModal('hero');
   };
 
   return (
@@ -319,7 +328,7 @@ function App() {
                   seamlessly hands off to you when they're ready. Built into your
                   landing page.
                 </p>
-                <InheritanceCalculator />
+                <InheritanceCalculator onAction={() => openModal('calculator')} />
                 <div className="deliverables">
                   <h4>The AI Does:</h4>
                   <ul>
@@ -439,12 +448,44 @@ function App() {
       <section>
         <div className="container">
           <div className="section-header fade-in">
-            <div className="section-number">04 — EXPECTED OUTCOMES</div>
-            <h2>What Success Looks Like</h2>
+            <div className="section-number">04 — THE ECOSYSTEM</div>
+            <h2>The Six Pillars of Acquisition</h2>
             <p className="section-description">
-              Conservative projections based on industry conversion benchmarks for
-              financial advisors
+              Our modular infrastructure is engineered to attract, qualify, and convert the next generation of wealth.
             </p>
+          </div>
+
+          <div className="ecosystem-grid">
+            <div className="pillar-card fade-in" onClick={() => openModal('pillar-1')}>
+              <div className="pillar-icon">01</div>
+              <h4>Scheduling Funnel</h4>
+              <p>Zero-friction booking integration directly into advisor calendars via automated routing.</p>
+            </div>
+            <div className="pillar-card fade-in" onClick={() => openModal('pillar-2')}>
+              <div className="pillar-icon">02</div>
+              <h4>Nova AI Assistant</h4>
+              <p>24/7 behavioral qualification and inheritance-specific financial modeling.</p>
+            </div>
+            <div className="pillar-card fade-in" onClick={() => openModal('pillar-3')}>
+              <div className="pillar-icon">03</div>
+              <h4>Interactive Calculators</h4>
+              <p>High-fidelity longevity and tax-exposure projections for immediate user gratification.</p>
+            </div>
+            <div className="pillar-card fade-in" onClick={() => openModal('pillar-4')}>
+              <div className="pillar-icon">04</div>
+              <h4>Lead Capture Loops</h4>
+              <p>Strategic data securement before delivering analytical results.</p>
+            </div>
+            <div className="pillar-card fade-in" onClick={() => openModal('pillar-5')}>
+              <div className="pillar-icon">05</div>
+              <h4>Authority Content</h4>
+              <p>AI-optimized SEO and distribution strategies for published thought leadership.</p>
+            </div>
+            <div className="pillar-card fade-in" onClick={() => openModal('pillar-6')}>
+              <div className="pillar-icon">06</div>
+              <h4>Compliance-First Landing Page</h4>
+              <p>Mobile-first, conversion-optimized Nexus branded for the fiduciary expert.</p>
+            </div>
           </div>
 
           <div className="metrics-grid">
@@ -700,7 +741,12 @@ function App() {
           </div>
         </div>
       </footer>
-      <NovaAssistant />
+      <NovaAssistant onLeadCapture={() => openModal('nova')} />
+      <LeadCaptureModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        source={modalSource}
+      />
     </div>
   );
 }
